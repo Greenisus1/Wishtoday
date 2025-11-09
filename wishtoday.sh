@@ -2,7 +2,7 @@
 # wishtoday - bootstrapper for WISHTODAY
 
 SYS_DIR="$HOME/.wishtoday"
-VERSION="0.5.5"
+VERSION="0.6"
 WISHTODAY="$SYS_DIR/wishtoday.sh"
 UPDATE="$SYS_DIR/update.sh"
 REPO_URL="https://raw.githubusercontent.com/Greenisus1/Wishtoday/main/wishtoday.sh"
@@ -10,12 +10,8 @@ REPO_URL="https://raw.githubusercontent.com/Greenisus1/Wishtoday/main/wishtoday.
 # --- Auto-update on every run ---
 auto_update() {
   mkdir -p "$SYS_DIR"
-  echo "Checking for latest wishtoday.sh..."
   if curl -fsSL "$REPO_URL" -o "$WISHTODAY"; then
     chmod +x "$WISHTODAY"
-    echo "wishtoday.sh updated."
-  else
-    echo "Warning: could not update from $REPO_URL"
   fi
 }
 
@@ -52,10 +48,14 @@ EOF
 
 update_cmd() {
   auto_update
+  echo "wishtoday.sh updated."
 }
 
 ver() { echo "wishtoday v$VERSION"; }
-help() { echo "Usage: wishtoday boot | update-new-user | update | ver | help | wipe-clean"; }
+
+help() {
+  echo "Usage: wishtoday boot | update-new-user | update | ver | help | wipe-clean"
+}
 
 wipe_clean() {
   echo "WARNING: This will permanently delete $SYS_DIR"
@@ -66,6 +66,30 @@ wipe_clean() {
   else
     echo "Cancelled."
   fi
+}
+
+homepage() {
+  cat <<EOF
+========================================
+        🌟 WISHTODAY v$VERSION 🌟
+----------------------------------------
+Your daily wish companion, refreshed
+automatically from GitHub.
+
+Current time: $(date +"%A, %B %d %Y %H:%M:%S")
+
+Available commands:
+  boot            → Run wishtoday.sh
+  update-new-user → Setup filesystem & install
+  update          → Fetch latest wishtoday.sh
+  ver             → Show version
+  help            → Quick usage guide
+  wipe-clean      → Delete ~/.wishtoday safely
+
+----------------------------------------
+Tip: Start with 'wishtoday boot' to begin.
+========================================
+EOF
 }
 
 # --- Command dispatcher ---
@@ -79,6 +103,7 @@ case "$cmd" in
   ver) ver ;;
   help) help ;;
   wipe-clean) wipe_clean ;;
+  "") homepage ;;
   *)
     echo "Unknown command: $cmd"
     help
