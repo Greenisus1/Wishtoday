@@ -1,8 +1,8 @@
-
 #!/usr/bin/env bash
 # wishnow.sh - bootstrapper for WISHTODAY
 
-SYS_DIR="/sys/wishnow"
+# Use a safe user-space directory instead of /sys
+SYS_DIR="$HOME/.wishtoday"
 VERSION="0.4"
 WISHTODAY="$SYS_DIR/wishtoday.sh"
 UPDATE="$SYS_DIR/update.sh"
@@ -25,7 +25,7 @@ update_new_user() {
   cat > "$UPDATE" <<'EOF'
 #!/usr/bin/env bash
 REPO_URL="https://raw.githubusercontent.com/Greenisus1/Wishtoday/main/wishtoday.sh"
-TARGET="/sys/wishnow/wishtoday.sh"
+TARGET="$HOME/.wishtoday/wishtoday.sh"
 
 echo "Updating wishtoday.sh from $REPO_URL..."
 curl -fsSL "$REPO_URL" -o "$TARGET" && chmod +x "$TARGET"
@@ -36,7 +36,6 @@ EOF
   # Initial fetch of wishtoday.sh
   echo "Fetching wishtoday.sh..."
   curl -fsSL "$REPO_URL" -o "$WISHTODAY" && chmod +x "$WISHTODAY"
-
   echo "Filesystem created and wishtoday.sh installed."
 }
 
